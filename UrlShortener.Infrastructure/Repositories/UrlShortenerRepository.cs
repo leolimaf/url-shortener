@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using UrlShortener.Domain.Entities;
 using UrlShortener.Domain.Repositories;
 using UrlShortener.Infrastructure.Data;
 
@@ -9,5 +10,10 @@ public class UrlShortenerRepository(ApplicationDbContext context) : IUrlShortene
     public async Task<bool> Exists(string code)
     {
         return await context.ShortenedUrls.AnyAsync(x => x.Code == code);
+    }
+
+    public async Task Add(ShortenedUrl shortenedUrl)
+    {
+        await context.AddAsync(shortenedUrl);
     }
 }

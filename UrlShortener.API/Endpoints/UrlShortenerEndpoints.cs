@@ -20,6 +20,9 @@ public static class UrlShortenerEndpoints
         if (!Uri.TryCreate(request.Url, UriKind.Absolute, out _))
             return Results.BadRequest("Invalid URL format.");
 
-        throw new NotImplementedException();
+        var code = await urlShortenerService.GenerateUniqueCode();
+        
+        var shortenedUrl = await urlShortenerService.IncludeShortenedUrl(request, code);
+        return Results.Ok(new { ShortenedUrl = shortenedUrl });
     }
 }

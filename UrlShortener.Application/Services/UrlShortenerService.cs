@@ -1,9 +1,15 @@
 ﻿using UrlShortener.Application.Abstractions;
+using UrlShortener.Application.DTOs.Requests;
+using UrlShortener.Domain.Entities;
 using UrlShortener.Domain.Repositories;
 
 namespace UrlShortener.Application.Services;
 
-public class UrlShortenerService(IUrlShortenerRepository urlShortenerRepository) : IUrlShortenerService
+public class UrlShortenerService(
+    // HttpContext httpContext,
+    IUrlShortenerRepository urlShortenerRepository,
+    IUnitOfWork unitOfWork
+    ) : IUrlShortenerService
 {
     public const int NumberOfCharactersInShortLink = 7;
     private const string Characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -24,5 +30,23 @@ public class UrlShortenerService(IUrlShortenerRepository urlShortenerRepository)
             if (!await urlShortenerRepository.Exists(code))
                 return code;
         }
+    }
+    
+    public async Task<string> IncludeShortenedUrl(ShortenUrlRequest request, string code)
+    {
+        // TODO: Avaliar como recuperar o httpContext corretamente
+        var shortenedUrl = new ShortenedUrl
+        {
+            Id = Guid.NewGuid(),
+            LongUrl = request.Url,
+            // ShortUrl = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}/api/{code}",
+            Code = code,
+            CreatedAtUtc = DateTime.UtcNow
+        };
+
+        await urlShortenerRepository.Add(shortenedUrl);
+        await unitOfWork.SaveAsync();
+        
+        return shortenedUrl.ShortUrl;
     }
 }

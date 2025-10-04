@@ -2,6 +2,12 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlShortener.API", "UrlShortener.API\UrlShortener.API.csproj", "{8404422D-9D07-45CB-8D9E-160EEE272C58}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlShortener.Application", "UrlShortener.Application\UrlShortener.Application.csproj", "{E78448AE-D7D4-4919-843B-144710931886}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlShortener.Domain", "UrlShortener.Domain\UrlShortener.Domain.csproj", "{104A4064-C85C-4C33-82A3-E7FB44FC3D39}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlShortener.Infrastructure", "UrlShortener.Infrastructure\UrlShortener.Infrastructure.csproj", "{D6043332-D0FC-4B5E-8EEC-79340CF9C7C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +18,17 @@ Global
 		{8404422D-9D07-45CB-8D9E-160EEE272C58}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8404422D-9D07-45CB-8D9E-160EEE272C58}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8404422D-9D07-45CB-8D9E-160EEE272C58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E78448AE-D7D4-4919-843B-144710931886}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E78448AE-D7D4-4919-843B-144710931886}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E78448AE-D7D4-4919-843B-144710931886}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E78448AE-D7D4-4919-843B-144710931886}.Release|Any CPU.Build.0 = Release|Any CPU
+		{104A4064-C85C-4C33-82A3-E7FB44FC3D39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{104A4064-C85C-4C33-82A3-E7FB44FC3D39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{104A4064-C85C-4C33-82A3-E7FB44FC3D39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{104A4064-C85C-4C33-82A3-E7FB44FC3D39}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6043332-D0FC-4B5E-8EEC-79340CF9C7C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6043332-D0FC-4B5E-8EEC-79340CF9C7C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6043332-D0FC-4B5E-8EEC-79340CF9C7C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6043332-D0FC-4B5E-8EEC-79340CF9C7C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

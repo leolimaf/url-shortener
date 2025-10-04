@@ -1,4 +1,7 @@
-﻿namespace UrlShortener.API.Endpoints;
+﻿using UrlShortener.Application.Abstractions;
+using UrlShortener.Application.DTOs.Requests;
+
+namespace UrlShortener.API.Endpoints;
 
 public static class UrlShortenerEndpoints
 {
@@ -6,14 +9,17 @@ public static class UrlShortenerEndpoints
     {
         var appGroup = app.MapGroup("url-shortener").WithTags("URL Shortener");
         
-        appGroup.MapGet("/shorten", Shorten)
-            .WithName(nameof(Shorten));
+        appGroup.MapPost("/shorten", ShortenUrl)
+            .WithName(nameof(ShortenUrl));
         
         return app;
     }
 
-    private static Task<IResult> Shorten()
+    private static async Task<IResult> ShortenUrl(ShortenUrlRequest request, IUrlShortenerService urlShortenerService)
     {
+        if (!Uri.TryCreate(request.Url, UriKind.Absolute, out _))
+            return Results.BadRequest("Invalid URL format.");
+
         throw new NotImplementedException();
     }
 }

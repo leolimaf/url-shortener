@@ -1,0 +1,23 @@
+﻿services:
+
+  urlshortener.database:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: urlshortener-database
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=MyStrongPassword@123
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    restart: unless-stopped
+    networks:
+      - sqlserver-network
+
+volumes:
+  sqlserver_data:
+    
+networks:
+  sqlserver-network:
+    driver: bridge

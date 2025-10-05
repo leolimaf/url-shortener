@@ -38,7 +38,7 @@ public class UrlShortenerService(
         {
             Id = Guid.NewGuid(),
             LongUrl = request.Url,
-            ShortUrl = $"{domain}/{code}",
+            ShortUrl = $"{domain}/api/{code}",
             Code = code,
             CreatedAtUtc = DateTime.UtcNow
         };
@@ -47,5 +47,12 @@ public class UrlShortenerService(
         await unitOfWork.SaveAsync();
         
         return new ShortenUrlResponse(shortenedUrl.ShortUrl);
+    }
+
+    public async Task<GetLongUrlResponse> GetLongUrlFromCode(string code)
+    {
+        var shortenedUrl = await urlShortenerRepository.Get(code);
+
+        return new GetLongUrlResponse(shortenedUrl?.LongUrl);
     }
 }

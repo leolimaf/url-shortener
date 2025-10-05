@@ -16,4 +16,9 @@ public class UrlShortenerRepository(ApplicationDbContext context) : IUrlShortene
     {
         await context.AddAsync(shortenedUrl);
     }
+
+    public async Task<ShortenedUrl?> Get(string code)
+    {
+        return await context.ShortenedUrls.FirstOrDefaultAsync(x => x.Code == code);
+    }
 }

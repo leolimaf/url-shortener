@@ -7,4 +7,5 @@ public interface IUrlShortenerService
 {
     Task<string> GenerateUniqueCode();
     Task<ShortenUrlResponse> IncludeShortenedUrl(ShortenUrlRequest request, string domain, string code);
+    Task<GetLongUrlResponse> GetLongUrlFromCode(string code);
 }

@@ -1,12 +1,12 @@
 ﻿using UrlShortener.Application.Abstractions;
 using UrlShortener.Application.DTOs.Requests;
+using UrlShortener.Application.DTOs.Response;
 using UrlShortener.Domain.Entities;
 using UrlShortener.Domain.Repositories;
 
 namespace UrlShortener.Application.Services;
 
 public class UrlShortenerService(
-    // HttpContext httpContext,
     IUrlShortenerRepository urlShortenerRepository,
     IUnitOfWork unitOfWork
     ) : IUrlShortenerService
@@ -32,14 +32,13 @@ public class UrlShortenerService(
         }
     }
     
-    public async Task<string> IncludeShortenedUrl(ShortenUrlRequest request, string code)
+    public async Task<ShortenUrlResponse> IncludeShortenedUrl(ShortenUrlRequest request, string domain, string code)
     {
-        // TODO: Avaliar como recuperar o httpContext corretamente
         var shortenedUrl = new ShortenedUrl
         {
             Id = Guid.NewGuid(),
             LongUrl = request.Url,
-            // ShortUrl = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}/api/{code}",
+            ShortUrl = $"{domain}/{code}",
             Code = code,
             CreatedAtUtc = DateTime.UtcNow
         };
@@ -47,6 +46,6 @@ public class UrlShortenerService(
         await urlShortenerRepository.Add(shortenedUrl);
         await unitOfWork.SaveAsync();
         
-        return shortenedUrl.ShortUrl;
+        return new ShortenUrlResponse(shortenedUrl.ShortUrl);
     }
 }

@@ -15,14 +15,15 @@ public static class UrlShortenerEndpoints
         return app;
     }
 
-    private static async Task<IResult> ShortenUrl(ShortenUrlRequest request, IUrlShortenerService urlShortenerService)
+    private static async Task<IResult> ShortenUrl(ShortenUrlRequest request, IUrlShortenerService urlShortenerService, HttpContext httpContext)
     {
         if (!Uri.TryCreate(request.Url, UriKind.Absolute, out _))
             return Results.BadRequest("Invalid URL format.");
 
+        var domain = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}";
         var code = await urlShortenerService.GenerateUniqueCode();
         
-        var shortenedUrl = await urlShortenerService.IncludeShortenedUrl(request, code);
-        return Results.Ok(new { ShortenedUrl = shortenedUrl });
+        var shortenedUrl = await urlShortenerService.IncludeShortenedUrl(request, domain, code);
+        return Results.Ok(shortenedUrl);
     }
 }

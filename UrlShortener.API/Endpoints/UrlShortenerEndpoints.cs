@@ -24,9 +24,8 @@ public static class UrlShortenerEndpoints
             return Results.BadRequest("Invalid URL format.");
 
         var domain = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}";
-        var code = await urlShortenerService.GenerateUniqueCode();
         
-        var shortenedUrl = await urlShortenerService.IncludeShortenedUrl(request, domain, code);
+        var shortenedUrl = await urlShortenerService.IncludeShortenedUrl(request, domain);
         return Results.Ok(shortenedUrl);
     }
 

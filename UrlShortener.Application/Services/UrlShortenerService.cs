@@ -11,29 +11,11 @@ public class UrlShortenerService(
     IUnitOfWork unitOfWork
     ) : IUrlShortenerService
 {
-    public const int NumberOfCharactersInShortLink = 7;
-    private const string Characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    public const int Length = 7;
     
-    private readonly Random _random = new();
-    
-    public async Task<string> GenerateUniqueCode()
+    public async Task<ShortenUrlResponse> IncludeShortenedUrl(ShortenUrlRequest request, string domain)
     {
-        while (true)
-        {
-            var codeChars = new char[NumberOfCharactersInShortLink];
-        
-            for (var i = 0; i < NumberOfCharactersInShortLink; i++)
-                codeChars[i] = Characters[_random.Next(Characters.Length - 1)];
-        
-            var code = new string(codeChars);
-
-            if (!await urlShortenerRepository.Exists(code))
-                return code;
-        }
-    }
-    
-    public async Task<ShortenUrlResponse> IncludeShortenedUrl(ShortenUrlRequest request, string domain, string code)
-    {
+        var code = await GenerateShortCode();
         var shortenedUrl = new ShortenedUrl
         {
             Id = Guid.NewGuid(),
@@ -47,6 +29,21 @@ public class UrlShortenerService(
         await unitOfWork.SaveAsync();
         
         return new ShortenUrlResponse(shortenedUrl.ShortUrl);
+    }
+    
+    private async Task<string> GenerateShortCode()
+    {
+        const string characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        
+        while (true)
+        {
+            var chars = Enumerable.Range(0, Length)
+                .Select(_ => characters[Random.Shared.Next(characters.Length)])
+                .ToString() ?? string.Empty;
+
+            if (!await urlShortenerRepository.Exists(chars))
+                return chars;
+        }
     }
 
     public async Task<GetLongUrlResponse> GetLongUrlFromCode(string code)

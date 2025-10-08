@@ -27,7 +27,7 @@ public class ShortenedUrlConfiguration : IEntityTypeConfiguration<ShortenedUrl>
 
         builder.Property(su => su.Code)
             .HasColumnName("CODE")
-            .HasMaxLength(UrlShortenerService.NumberOfCharactersInShortLink);
+            .HasMaxLength(UrlShortenerService.Length);
         
         builder.Property(su => su.CreatedAtUtc)
             .HasColumnName("CREATED_AT_UTC")

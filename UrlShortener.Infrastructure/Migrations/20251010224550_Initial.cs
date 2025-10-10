@@ -36,6 +36,7 @@ namespace UrlShortener.Infrastructure.Migrations
                     VISITED_AT = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     USER_AGENT = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     REFERER = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IP_ADDRESS = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SHORTENED_URL_ID = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -58,8 +59,7 @@ namespace UrlShortener.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_VISITED_URL_CODE",
                 table: "VISITED_URL",
-                column: "CODE",
-                unique: true);
+                column: "CODE");
 
             migrationBuilder.CreateIndex(
                 name: "IX_VISITED_URL_SHORTENED_URL_ID",

@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using UrlShortener.Infrastructure.Data;
+﻿using UrlShortener.API.Contexts;
+using UrlShortener.Application.Abstractions;
 
 namespace UrlShortener.API;
 
@@ -9,6 +9,9 @@ public static class DependencyInjection
     {
         services.AddEndpointsApiExplorer();
         services.AddOpenApi();
+        
+        services.AddHttpContextAccessor();
+        services.AddScoped<IUserContext, UserContext>();
         
         return services;
     }

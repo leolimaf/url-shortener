@@ -31,6 +31,9 @@ public class VisitedUrlConfiguration : IEntityTypeConfiguration<VisitedUrl>
         builder.Property(vu => vu.Referer)
             .HasColumnName("REFERER");
         
+        builder.Property(vu => vu.IpAddress)
+            .HasColumnName("IP_ADDRESS");
+        
         builder.Property(vu => vu.ShortenedUrlId)
             .HasColumnName("SHORTENED_URL_ID")
             .IsRequired();
@@ -40,7 +43,6 @@ public class VisitedUrlConfiguration : IEntityTypeConfiguration<VisitedUrl>
             .HasForeignKey(vu => vu.ShortenedUrlId)
             .OnDelete(DeleteBehavior.Cascade);
         
-        builder.HasIndex(vu => vu.Code)
-            .IsUnique();
+        builder.HasIndex(vu => vu.Code);
     }
 }

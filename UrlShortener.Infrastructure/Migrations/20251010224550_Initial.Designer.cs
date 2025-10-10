@@ -12,7 +12,7 @@ using UrlShortener.Infrastructure.Data;
 namespace UrlShortener.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251010185944_Initial")]
+    [Migration("20251010224550_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -74,6 +74,10 @@ namespace UrlShortener.Infrastructure.Migrations
                         .HasColumnType("nvarchar(7)")
                         .HasColumnName("CODE");
 
+                    b.Property<string>("IpAddress")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("IP_ADDRESS");
+
                     b.Property<string>("Referer")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("REFERER");
@@ -94,8 +98,7 @@ namespace UrlShortener.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Code")
-                        .IsUnique();
+                    b.HasIndex("Code");
 
                     b.HasIndex("ShortenedUrlId");
 

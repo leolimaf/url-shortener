@@ -7,6 +7,7 @@ public class VisitedUrl
     public DateTime VisitedAt { get; set; }
     public string? UserAgent { get; set; }
     public string? Referer { get; set; }
+    public string? IpAddress { get; set; }
 
     public long ShortenedUrlId  { get; set; }
     public virtual ShortenedUrl ShortenedUrl { get; set; } = new();

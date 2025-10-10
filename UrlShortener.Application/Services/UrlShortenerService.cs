@@ -1,4 +1,4 @@
-﻿using UrlShortener.Application.Abstractions;
+using UrlShortener.Application.Abstractions;
 using UrlShortener.Application.DTOs.Requests;
 using UrlShortener.Application.DTOs.Response;
 using UrlShortener.Domain.Entities;
@@ -37,9 +37,9 @@ public class UrlShortenerService(
         
         while (true)
         {
-            var chars = Enumerable.Range(0, Length)
+            var chars = new string(Enumerable.Range(0, Length)
                 .Select(_ => characters[Random.Shared.Next(characters.Length)])
-                .ToString() ?? string.Empty;
+                .ToArray());
 
             if (!await urlShortenerRepository.Exists(chars))
                 return chars;

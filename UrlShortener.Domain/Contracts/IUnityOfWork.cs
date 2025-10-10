@@ -1,4 +1,4 @@
-﻿namespace UrlShortener.Domain.Repositories;
+﻿namespace UrlShortener.Domain.Contracts;
 
 public interface IUnitOfWork : IDisposable
 {

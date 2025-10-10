@@ -1,4 +1,4 @@
-﻿using UrlShortener.Domain.Repositories;
+﻿using UrlShortener.Domain.Contracts;
 using UrlShortener.Infrastructure.Data;
 
 namespace UrlShortener.Infrastructure.Repositories;

@@ -11,10 +11,12 @@ public class ApplicationDbContext : DbContext
     }
 
     public DbSet<ShortenedUrl> ShortenedUrls { get; set; }
+    public DbSet<VisitedUrl> VisitedUrls { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfiguration(new ShortenedUrlConfiguration());
+        modelBuilder.ApplyConfiguration(new VisitedUrlConfiguration());
     }
 }

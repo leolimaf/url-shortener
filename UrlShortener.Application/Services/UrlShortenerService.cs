@@ -1,8 +1,8 @@
 ﻿using UrlShortener.Application.Abstractions;
 using UrlShortener.Application.DTOs.Requests;
 using UrlShortener.Application.DTOs.Response;
+using UrlShortener.Domain.Contracts;
 using UrlShortener.Domain.Entities;
-using UrlShortener.Domain.Repositories;
 
 namespace UrlShortener.Application.Services;
 
@@ -18,17 +18,15 @@ public class UrlShortenerService(
         var code = await GenerateShortCode();
         var shortenedUrl = new ShortenedUrl
         {
-            Id = Guid.NewGuid(),
-            LongUrl = request.Url,
-            ShortUrl = $"{domain}/{code}",
+            OriginalUrl = request.Url,
             Code = code,
-            CreatedAtUtc = DateTime.UtcNow
+            CreatedAt = DateTime.Now
         };
 
         await urlShortenerRepository.Add(shortenedUrl);
         await unitOfWork.SaveAsync();
         
-        return new ShortenUrlResponse(shortenedUrl.ShortUrl);
+        return new ShortenUrlResponse(shortenedUrl.Code);
     }
     
     private async Task<string> GenerateShortCode()
@@ -50,6 +48,6 @@ public class UrlShortenerService(
     {
         var shortenedUrl = await urlShortenerRepository.Get(code);
 
-        return new GetLongUrlResponse(shortenedUrl?.LongUrl);
+        return new GetLongUrlResponse(shortenedUrl?.OriginalUrl);
     }
 }

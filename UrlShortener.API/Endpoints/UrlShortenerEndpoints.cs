@@ -7,35 +7,32 @@ public static class UrlShortenerEndpoints
 {
     public static IEndpointRouteBuilder MapUrlShortenerEndpoints(this IEndpointRouteBuilder app)
     {
-        var appGroup = app.MapGroup("").WithTags("URL Shortener");
+        var appGroup = app.MapGroup("url-shortener").WithTags("URL Shortener");
         
-        appGroup.MapPost("", ShortenUrl)
-            .WithName(nameof(ShortenUrl));
+        appGroup.MapPost("", IncludeShortenedUrl)
+            .WithName(nameof(IncludeShortenedUrl));
         
-        appGroup.MapGet("{code}", GetLongUrl)
-            .WithName(nameof(GetLongUrl));
+        appGroup.MapGet("{code}", GetOriginalUrl)
+            .WithName(nameof(GetOriginalUrl));
         
         return app;
     }
 
-    private static async Task<IResult> ShortenUrl(ShortenUrlRequest request, IUrlShortenerService urlShortenerService, HttpContext httpContext)
+    private static async Task<IResult> IncludeShortenedUrl(ShortenUrlRequest request, IUrlShortenerService urlShortenerService)
     {
         if (!Uri.TryCreate(request.Url, UriKind.Absolute, out _))
             return Results.BadRequest("Invalid URL format.");
 
-        var domain = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}";
-        var code = await urlShortenerService.GenerateUniqueCode();
-        
-        var shortenedUrl = await urlShortenerService.IncludeShortenedUrl(request, domain, code);
-        return Results.Ok(shortenedUrl);
+        var response = await urlShortenerService.IncludeShortenedUrl(request);
+        return Results.Ok(response);
     }
 
-    private static async Task<IResult> GetLongUrl(string code, IUrlShortenerService urlShortenerService)
+    private static async Task<IResult> GetOriginalUrl(string code, IUrlShortenerService urlShortenerService)
     {
-        var response = await urlShortenerService.GetLongUrlFromCode(code);
+        var response = await urlShortenerService.GetOriginalUrl(code);
 
-        return string.IsNullOrWhiteSpace(response.LongUrl) 
+        return string.IsNullOrWhiteSpace(response.OriginalUrl) 
             ? Results.NotFound() 
-            : Results.Redirect(response.LongUrl);
+            : Results.Redirect(response.OriginalUrl);
     }
 }

@@ -17,21 +17,17 @@ public class ShortenedUrlConfiguration : IEntityTypeConfiguration<ShortenedUrl>
             .ValueGeneratedOnAdd()
             .HasColumnName("ID");
         
-        builder.Property(su => su.LongUrl)
-            .HasColumnName("LONG_URL")
-            .IsRequired();
-        
-        builder.Property(su => su.ShortUrl)
-            .HasColumnName("SHORT_URL")
-            .IsRequired();
-
         builder.Property(su => su.Code)
             .HasColumnName("CODE")
-            .HasMaxLength(UrlShortenerService.NumberOfCharactersInShortLink);
+            .HasMaxLength(UrlShortenerService.Length);
         
-        builder.Property(su => su.CreatedAtUtc)
-            .HasColumnName("CREATED_AT_UTC")
+        builder.Property(su => su.OriginalUrl)
+            .HasColumnName("ORIGINAL_URL")
             .IsRequired();
+        
+        builder.Property(su => su.CreatedAt)
+            .HasColumnName("CREATED_AT")
+            .HasDefaultValueSql("GETDATE()");
         
         builder.HasIndex(su => su.Code)
             .IsUnique();

@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using UrlShortener.Domain.Repositories;
+using UrlShortener.Domain.Contracts;
 using UrlShortener.Infrastructure.Data;
 using UrlShortener.Infrastructure.Repositories;
 
@@ -18,5 +19,12 @@ public static class DependencyInjection
         services.AddScoped<IUrlShortenerRepository, UrlShortenerRepository>();
         
         return services;
+    }
+    
+    public static void ApplyMigrations(this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        dbContext.Database.Migrate();
     }
 }

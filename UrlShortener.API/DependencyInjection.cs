@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using UrlShortener.Infrastructure.Data;
+﻿using UrlShortener.API.Contexts;
+using UrlShortener.Application.Abstractions;
 
 namespace UrlShortener.API;
 
@@ -9,6 +9,9 @@ public static class DependencyInjection
     {
         services.AddEndpointsApiExplorer();
         services.AddOpenApi();
+        
+        services.AddHttpContextAccessor();
+        services.AddScoped<IUserContext, UserContext>();
         
         return services;
     }
@@ -22,18 +25,10 @@ public static class DependencyInjection
             {
                 options.SwaggerEndpoint("/openapi/v1.json", "v1");
             });
-            app.ApplyMigrations();
         }
 
         app.UseHttpsRedirection();
         
         return app;
-    }
-    
-    private static void ApplyMigrations(this WebApplication app)
-    {
-        using var scope = app.Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        dbContext.Database.Migrate();
     }
 }

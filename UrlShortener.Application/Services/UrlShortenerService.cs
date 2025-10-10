@@ -1,4 +1,4 @@
-using UrlShortener.Application.Abstractions;
+﻿using UrlShortener.Application.Abstractions;
 using UrlShortener.Application.DTOs.Requests;
 using UrlShortener.Application.DTOs.Response;
 using UrlShortener.Domain.Entities;
@@ -20,7 +20,7 @@ public class UrlShortenerService(
         {
             Id = Guid.NewGuid(),
             LongUrl = request.Url,
-            ShortUrl = $"{domain}/api/{code}",
+            ShortUrl = $"{domain}/{code}",
             Code = code,
             CreatedAtUtc = DateTime.UtcNow
         };

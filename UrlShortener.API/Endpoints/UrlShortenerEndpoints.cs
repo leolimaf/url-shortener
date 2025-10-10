@@ -7,7 +7,7 @@ public static class UrlShortenerEndpoints
 {
     public static IEndpointRouteBuilder MapUrlShortenerEndpoints(this IEndpointRouteBuilder app)
     {
-        var appGroup = app.MapGroup("").WithTags("URL Shortener");
+        var appGroup = app.MapGroup("url-shortener").WithTags("URL Shortener");
         
         appGroup.MapPost("", ShortenUrl)
             .WithName(nameof(ShortenUrl));

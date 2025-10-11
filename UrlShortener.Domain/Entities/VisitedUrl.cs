@@ -4,7 +4,7 @@ public class VisitedUrl
 {
     public long Id { get; set; }
     public string Code { get; set; } = string.Empty;
-    public DateTime VisitedAt { get; set; }
+    public DateTime VisitedAtUtc { get; set; }
     public string? UserAgent { get; set; }
     public string? Referer { get; set; }
     public string? IpAddress { get; set; }

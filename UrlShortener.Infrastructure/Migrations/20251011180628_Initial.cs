@@ -19,7 +19,7 @@ namespace UrlShortener.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CODE = table.Column<string>(type: "nvarchar(7)", maxLength: 7, nullable: false),
                     ORIGINAL_URL = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CREATED_AT = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
+                    CREATED_AT_UTC = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
                 },
                 constraints: table =>
                 {
@@ -33,7 +33,7 @@ namespace UrlShortener.Infrastructure.Migrations
                     ID = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CODE = table.Column<string>(type: "nvarchar(7)", maxLength: 7, nullable: false),
-                    VISITED_AT = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    VISITED_AT_UTC = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     USER_AGENT = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     REFERER = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IP_ADDRESS = table.Column<string>(type: "nvarchar(max)", nullable: true),

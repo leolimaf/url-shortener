@@ -25,9 +25,9 @@ public class ShortenedUrlConfiguration : IEntityTypeConfiguration<ShortenedUrl>
             .HasColumnName("ORIGINAL_URL")
             .IsRequired();
         
-        builder.Property(su => su.CreatedAt)
-            .HasColumnName("CREATED_AT")
-            .HasDefaultValueSql("GETDATE()");
+        builder.Property(su => su.CreatedAtUtc)
+            .HasColumnName("CREATED_AT_UTC")
+            .HasDefaultValueSql("GETUTCDATE()");
         
         builder.HasIndex(su => su.Code)
             .IsUnique();

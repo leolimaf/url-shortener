@@ -37,11 +37,11 @@ namespace UrlShortener.Infrastructure.Migrations
                         .HasColumnType("nvarchar(7)")
                         .HasColumnName("CODE");
 
-                    b.Property<DateTime>("CreatedAt")
+                    b.Property<DateTime>("CreatedAtUtc")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasColumnName("CREATED_AT")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnName("CREATED_AT_UTC")
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("OriginalUrl")
                         .IsRequired()
@@ -87,11 +87,11 @@ namespace UrlShortener.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("USER_AGENT");
 
-                    b.Property<DateTime>("VisitedAt")
+                    b.Property<DateTime>("VisitedAtUtc")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasColumnName("VISITED_AT")
-                        .HasDefaultValueSql("GETDATE()");
+                        .HasColumnName("VISITED_AT_UTC")
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.HasKey("Id");
 

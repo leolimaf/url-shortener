@@ -21,9 +21,9 @@ public class VisitedUrlConfiguration : IEntityTypeConfiguration<VisitedUrl>
             .HasColumnName("CODE")
             .HasMaxLength(UrlShortenerService.Length);
         
-        builder.Property(vu => vu.VisitedAt)
-            .HasColumnName("VISITED_AT")
-            .HasDefaultValueSql("GETDATE()");
+        builder.Property(vu => vu.VisitedAtUtc)
+            .HasColumnName("VISITED_AT_UTC")
+            .HasDefaultValueSql("GETUTCDATE()");
 
         builder.Property(vu => vu.UserAgent)
             .HasColumnName("USER_AGENT");

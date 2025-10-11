@@ -21,7 +21,7 @@ public class UrlShortenerService(
         {
             OriginalUrl = request.Url,
             Code = code,
-            CreatedAt = DateTime.Now
+            CreatedAtUtc = DateTime.UtcNow
         };
 
         await urlShortenerRepository.Add(shortenedUrl);
@@ -54,7 +54,7 @@ public class UrlShortenerService(
             var visitedUrl = new VisitedUrl
             {
                 Code = code,
-                VisitedAt = DateTime.Now,
+                VisitedAtUtc = DateTime.UtcNow,
                 UserAgent = userContext.UserAgent,
                 Referer = userContext.Referer,
                 IpAddress = userContext.IpAddress,

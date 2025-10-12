@@ -32,7 +32,7 @@ public class UrlShortenerService(
                     CreatedAtUtc = DateTime.UtcNow
                 };
 
-                await urlShortenerRepository.Add(shortenedUrl);
+                await urlShortenerRepository.AddShortenedUrl(shortenedUrl);
                 await unitOfWork.SaveAsync();
 
                 return new ShortenUrlResponse(shortenedUrl.Code);
@@ -64,9 +64,9 @@ public class UrlShortenerService(
 
     public async Task<GetOriginalUrlResponse> GetOriginalUrl(string code)
     {
-        var shortenedUrl = await urlShortenerRepository.Get(code);
+        var originalUrl = await urlShortenerRepository.GetOriginalUrl(code);
 
-        if (shortenedUrl is not null)
+        if (!string.IsNullOrEmpty(originalUrl))
         {
             var visitedUrl = new VisitedUrl
             {
@@ -74,15 +74,12 @@ public class UrlShortenerService(
                 VisitedAtUtc = DateTime.UtcNow,
                 UserAgent = userContext.UserAgent,
                 Referer = userContext.Referer,
-                IpAddress = userContext.IpAddress,
-                ShortenedUrlId = shortenedUrl.Id
+                IpAddress = userContext.IpAddress
             };
-            shortenedUrl.VisitedUrls.Add(visitedUrl);
             
-            await urlShortenerRepository.Add(shortenedUrl);
-            await unitOfWork.SaveAsync();
+            await urlShortenerRepository.AddVisitedUrl(visitedUrl);
         }
 
-        return new GetOriginalUrlResponse(shortenedUrl?.OriginalUrl);
+        return new GetOriginalUrlResponse(originalUrl);
     }
 }

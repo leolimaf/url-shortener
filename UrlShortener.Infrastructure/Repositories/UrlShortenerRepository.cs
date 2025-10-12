@@ -7,11 +7,6 @@ namespace UrlShortener.Infrastructure.Repositories;
 
 public class UrlShortenerRepository(ApplicationDbContext context) : IUrlShortenerRepository
 {
-    public async Task<bool> Exists(string code)
-    {
-        return await context.ShortenedUrls.AnyAsync(x => x.Code == code);
-    }
-
     public async Task Add(ShortenedUrl shortenedUrl)
     {
         if (shortenedUrl.Id <= 0)

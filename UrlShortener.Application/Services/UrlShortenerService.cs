@@ -1,4 +1,6 @@
-﻿using UrlShortener.Application.Abstractions;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using UrlShortener.Application.Abstractions;
 using UrlShortener.Application.DTOs.Requests;
 using UrlShortener.Application.DTOs.Response;
 using UrlShortener.Domain.Contracts;
@@ -7,6 +9,7 @@ using UrlShortener.Domain.Entities;
 namespace UrlShortener.Application.Services;
 
 public class UrlShortenerService(
+    ILogger<UrlShortenerService> logger,
     IUrlShortenerRepository urlShortenerRepository,
     IUnitOfWork unitOfWork,
     IUserContext userContext
@@ -16,33 +19,47 @@ public class UrlShortenerService(
     
     public async Task<ShortenUrlResponse> IncludeShortenedUrl(ShortenUrlRequest request)
     {
-        var code = await GenerateShortCode();
-        var shortenedUrl = new ShortenedUrl
+        const int maxAttempts = 5;
+        for (var attempt = 0; attempt < maxAttempts; attempt++)
         {
-            OriginalUrl = request.Url,
-            Code = code,
-            CreatedAtUtc = DateTime.UtcNow
-        };
+            var code = GenerateCode();
+            try
+            {
+                var shortenedUrl = new ShortenedUrl
+                {
+                    OriginalUrl = request.Url,
+                    Code = code,
+                    CreatedAtUtc = DateTime.UtcNow
+                };
 
-        await urlShortenerRepository.Add(shortenedUrl);
-        await unitOfWork.SaveAsync();
-        
-        return new ShortenUrlResponse(shortenedUrl.Code);
+                await urlShortenerRepository.Add(shortenedUrl);
+                await unitOfWork.SaveAsync();
+
+                return new ShortenUrlResponse(shortenedUrl.Code);
+            }
+            catch (DbUpdateException e)
+            {
+                if (attempt + 1 == maxAttempts)
+                {
+                    logger.LogError(e, "Failed to generate a unique code after {0} attempts.", maxAttempts);
+                    throw;
+                }
+
+                logger.LogWarning("Code collision detected. Retrying... Attempt {0} of {1}", attempt + 1, maxAttempts);
+            }
+        }
+        throw new InvalidOperationException("Failed to generate a unique code.");
     }
     
-    private async Task<string> GenerateShortCode()
+    private static string GenerateCode()
     {
         const string characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         
-        while (true)
-        {
-            var chars = new string(Enumerable.Range(0, Length)
-                .Select(_ => characters[Random.Shared.Next(characters.Length)])
-                .ToArray());
+        var chars = Enumerable.Range(0, Length)
+            .Select(_ => characters[Random.Shared.Next(characters.Length)])
+            .ToArray();
 
-            if (!await urlShortenerRepository.Exists(chars))
-                return chars;
-        }
+        return new string(chars);
     }
 
     public async Task<GetOriginalUrlResponse> GetOriginalUrl(string code)

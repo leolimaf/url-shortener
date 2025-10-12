@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Logging;
 using UrlShortener.Application.Abstractions;
 using UrlShortener.Application.DTOs.Requests;
@@ -12,7 +13,8 @@ public class UrlShortenerService(
     ILogger<UrlShortenerService> logger,
     IUrlShortenerRepository urlShortenerRepository,
     IUnitOfWork unitOfWork,
-    IUserContext userContext
+    IUserContext userContext,
+    HybridCache hybridCache
     ) : IUrlShortenerService
 {
     public const int Length = 7;
@@ -34,6 +36,8 @@ public class UrlShortenerService(
 
                 await urlShortenerRepository.AddShortenedUrl(shortenedUrl);
                 await unitOfWork.SaveAsync();
+                
+                await hybridCache.SetAsync(shortenedUrl.Code, shortenedUrl.OriginalUrl);
 
                 return new ShortenUrlResponse(shortenedUrl.Code);
             }
@@ -64,7 +68,7 @@ public class UrlShortenerService(
 
     public async Task<GetOriginalUrlResponse> GetOriginalUrl(string code)
     {
-        var originalUrl = await urlShortenerRepository.GetOriginalUrl(code);
+        var originalUrl = await hybridCache.GetOrCreateAsync(code, async token => await urlShortenerRepository.GetOriginalUrl(code, token));
 
         if (!string.IsNullOrEmpty(originalUrl))
         {

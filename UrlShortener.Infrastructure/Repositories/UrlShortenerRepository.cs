@@ -23,12 +23,12 @@ public class UrlShortenerRepository(ApplicationDbContext context) : IUrlShortene
         ");
     }
 
-    public async Task<string?> GetOriginalUrl(string code)
+    public async Task<string?> GetOriginalUrl(string code, CancellationToken token)
     {
         return await context.ShortenedUrls
             .AsNoTracking()
             .Where(x => x.Code == code)
             .Select(x => x.OriginalUrl)
-            .FirstOrDefaultAsync();
+            .FirstOrDefaultAsync(cancellationToken: token);
     }
 }

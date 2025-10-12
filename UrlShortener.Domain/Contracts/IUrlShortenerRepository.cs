@@ -6,5 +6,5 @@ public interface IUrlShortenerRepository
 {
     public Task AddShortenedUrl(ShortenedUrl shortenedUrl);
     public Task AddVisitedUrl(VisitedUrl visitedUrl);
-    public Task<string?> GetOriginalUrl(string code);
+    public Task<string?> GetOriginalUrl(string code, CancellationToken token);
 }

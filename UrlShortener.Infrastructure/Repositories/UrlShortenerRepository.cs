@@ -7,26 +7,28 @@ namespace UrlShortener.Infrastructure.Repositories;
 
 public class UrlShortenerRepository(ApplicationDbContext context) : IUrlShortenerRepository
 {
-    public async Task<bool> Exists(string code)
+    public async Task AddShortenedUrl(ShortenedUrl shortenedUrl)
     {
-        return await context.ShortenedUrls.AnyAsync(x => x.Code == code);
+        await context.ShortenedUrls.AddAsync(shortenedUrl);
     }
 
-    public async Task Add(ShortenedUrl shortenedUrl)
+    public async Task AddVisitedUrl(VisitedUrl visitedUrl)
     {
-        if (shortenedUrl.Id <= 0)
-            await context.ShortenedUrls.AddAsync(shortenedUrl);
-        else
-        {
-            context.ShortenedUrls.Attach(shortenedUrl);
-            context.Entry(shortenedUrl).State = EntityState.Modified;
-        }
+        await context.Database.ExecuteSqlInterpolatedAsync($@"
+           INSERT INTO VISITED_URL (CODE, VISITED_AT_UTC, USER_AGENT, REFERER, IP_ADDRESS, SHORTENED_URL_ID)
+           SELECT {visitedUrl.Code}, {visitedUrl.VisitedAtUtc}, {visitedUrl.UserAgent}, {visitedUrl.Referer}, 
+                  {visitedUrl.IpAddress}, Id
+           FROM SHORTENED_URL
+           WHERE CODE = {visitedUrl.Code};
+        ");
     }
 
-    public async Task<ShortenedUrl?> Get(string code)
+    public async Task<string?> GetOriginalUrl(string code, CancellationToken token)
     {
         return await context.ShortenedUrls
-            .Include(x => x.VisitedUrls)
-            .FirstOrDefaultAsync(x => x.Code == code);
+            .AsNoTracking()
+            .Where(x => x.Code == code)
+            .Select(x => x.OriginalUrl)
+            .FirstOrDefaultAsync(cancellationToken: token);
     }
 }

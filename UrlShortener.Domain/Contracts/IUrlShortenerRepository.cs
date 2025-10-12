@@ -1,10 +1,10 @@
-﻿using UrlShortener.Domain.Entities;
+using UrlShortener.Domain.Entities;
 
 namespace UrlShortener.Domain.Contracts;
 
 public interface IUrlShortenerRepository
 {
-    public Task<bool> Exists(string code);
-    public Task Add(ShortenedUrl shortenedUrl);
-    public Task<ShortenedUrl?> Get(string code);
+    public Task AddShortenedUrl(ShortenedUrl shortenedUrl);
+    public Task AddVisitedUrl(VisitedUrl visitedUrl);
+    public Task<string?> GetOriginalUrl(string code, CancellationToken token);
 }

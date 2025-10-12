@@ -13,11 +13,20 @@
       - sqlserver_data:/var/opt/mssql
     restart: unless-stopped
     networks:
-      - sqlserver-network
+      - application-network
+        
+  urlshortener.redis:
+    image: redis:latest
+    container_name: urlshortener-redis
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    networks:
+      - application-network
 
 volumes:
   sqlserver_data:
     
 networks:
-  sqlserver-network:
+  application-network:
     driver: bridge

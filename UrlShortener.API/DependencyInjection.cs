@@ -1,5 +1,7 @@
-﻿using UrlShortener.API.Contexts;
+﻿using Microsoft.EntityFrameworkCore;
+using UrlShortener.API.Contexts;
 using UrlShortener.Application.Abstractions;
+using UrlShortener.Infrastructure.Data;
 
 namespace UrlShortener.API;
 
@@ -30,5 +32,12 @@ public static class DependencyInjection
         app.UseHttpsRedirection();
         
         return app;
+    }
+    
+    public static void ApplyMigrations(this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        dbContext.Database.Migrate();
     }
 }

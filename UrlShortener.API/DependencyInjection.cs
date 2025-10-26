@@ -20,6 +20,8 @@ public static class DependencyInjection
 
     public static WebApplication AddMiddlewares(this WebApplication app)
     {
+        app.UseSerilogRequestLogging();
+        
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();

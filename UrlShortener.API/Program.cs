@@ -1,6 +1,12 @@
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration)
+        .Enrich.FromLogContext()
+        .Enrich.WithProperty("Application", "UrlShortener.API")
+        .Enrich.WithProperty("Environment", context.HostingEnvironment.EnvironmentName));
+
 builder.Services
     .AddWebApiServices()
     .AddApplication()

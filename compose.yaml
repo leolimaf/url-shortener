@@ -23,6 +23,21 @@
     restart: unless-stopped
     networks:
       - application-network
+        
+  urlshortener.seq:
+    image: datalust/seq:latest
+    container_name: urlshortener-seq
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_NOAUTHENTICATION=True
+    ports:
+      - "5341:80"
+    volumes:
+      - seq_data:/data
+    restart: unless-stopped
+    networks:
+      - application-network
+
 
   urlshortener.api:
     build:
@@ -37,15 +52,19 @@
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:8080
       - ConnectionStrings__Default=Server=urlshortener.database,1433;Database=urlshortener-db;User Id=sa;Password=MyStrongPassword@123;Trusted_Connection=False;TrustServerCertificate=True;
+      - ConnectionStrings__Redis=urlshortener.redis:6379
+      - Serilog__WriteTo__1__Args__serverUrl=http://urlshortener.seq:5341
     depends_on:
       - urlshortener.database
       - urlshortener.redis
+      - urlshortener.seq
     restart: unless-stopped
     networks:
       - application-network
 
 volumes:
   sqlserver_data:
+  seq_data:
     
 networks:
   application-network:

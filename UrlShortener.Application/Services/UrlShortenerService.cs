@@ -2,8 +2,8 @@
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Logging;
 using UrlShortener.Application.Abstractions;
-using UrlShortener.Application.DTOs.Requests;
-using UrlShortener.Application.DTOs.Response;
+using UrlShortener.Application.DTOs.UrlShortener.Requests;
+using UrlShortener.Application.DTOs.UrlShortener.Responses;
 using UrlShortener.Domain.Contracts;
 using UrlShortener.Domain.Entities;
 

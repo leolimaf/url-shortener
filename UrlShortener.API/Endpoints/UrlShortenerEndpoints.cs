@@ -1,5 +1,5 @@
 ﻿using UrlShortener.Application.Abstractions;
-using UrlShortener.Application.DTOs.Requests;
+using UrlShortener.Application.DTOs.UrlShortener.Requests;
 
 namespace UrlShortener.API.Endpoints;
 

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using UrlShortener.Application.Settings;
 using UrlShortener.Domain.Contracts;
 using UrlShortener.Infrastructure.Data;
 using UrlShortener.Infrastructure.Repositories;
@@ -15,7 +16,10 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("Default")));
         
+        services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+        
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUrlShortenerRepository, UrlShortenerRepository>();
 
         services.AddStackExchangeRedisCache(options => options.Configuration = configuration.GetConnectionString("Redis"));

@@ -26,6 +26,7 @@ app.MapGet("{code}", (string code, HttpContext httpContext) =>
 }).ExcludeFromDescription();
 
 app.MapGroup("/api")
+    .MapAuthEndpoints()
     .MapUrlShortenerEndpoints();
 
 app.Run();

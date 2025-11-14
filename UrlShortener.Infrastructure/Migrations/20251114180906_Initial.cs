@@ -12,6 +12,24 @@ namespace UrlShortener.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "USER",
+                columns: table => new
+                {
+                    ID = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FULL_NAME = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BIRTH_DATE = table.Column<DateOnly>(type: "date", nullable: true),
+                    PHONE = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EMAIL = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    PASSWORD_HASH = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IS_EMAIL_CONFIRMED = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_USER", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SHORTENED_URL",
                 columns: table => new
                 {
@@ -19,11 +37,18 @@ namespace UrlShortener.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CODE = table.Column<string>(type: "nvarchar(7)", maxLength: 7, nullable: false),
                     ORIGINAL_URL = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CREATED_AT_UTC = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
+                    CREATED_AT_UTC = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    USER_ID = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_SHORTENED_URL", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_SHORTENED_URL_USER_USER_ID",
+                        column: x => x.USER_ID,
+                        principalTable: "USER",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -57,6 +82,17 @@ namespace UrlShortener.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_SHORTENED_URL_USER_ID",
+                table: "SHORTENED_URL",
+                column: "USER_ID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_USER_EMAIL_UNIQUE",
+                table: "USER",
+                column: "EMAIL",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_VISITED_URL_CODE",
                 table: "VISITED_URL",
                 column: "CODE");
@@ -75,6 +111,9 @@ namespace UrlShortener.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "SHORTENED_URL");
+
+            migrationBuilder.DropTable(
+                name: "USER");
         }
     }
 }

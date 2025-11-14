@@ -21,7 +21,7 @@ public static class UrlShortenerEndpoints
     private static async Task<IResult> IncludeShortenedUrl(ShortenUrlRequest request, IUrlShortenerService urlShortenerService)
     {
         if (!Uri.TryCreate(request.Url, UriKind.Absolute, out _))
-            return Results.BadRequest("Invalid URL format.");
+            return Results.BadRequest(new { errorMessage = "Invalid URL format." });
 
         var response = await urlShortenerService.IncludeShortenedUrl(request);
         return Results.Ok(response);

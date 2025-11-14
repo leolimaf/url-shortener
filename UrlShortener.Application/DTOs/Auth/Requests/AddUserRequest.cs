@@ -3,7 +3,7 @@
 public record AddUserRequest(
     string FirstName,
     string LastName,
-    DateOnly BirthDate,
+    DateOnly? BirthDate,
     string Phone,
     string Email,
     string Password

@@ -29,22 +29,25 @@ public static class AuthEndpoints
     {
         if (string.IsNullOrWhiteSpace(userDto.FirstName) 
             || string.IsNullOrWhiteSpace(userDto.LastName) 
+            || userDto.BirthDate is null
+            || string.IsNullOrWhiteSpace(userDto.Phone) 
             || string.IsNullOrWhiteSpace(userDto.Email) 
             || string.IsNullOrWhiteSpace(userDto.Password))
         {
-            return TypedResults.BadRequest($"The fields {userDto.FirstName}, {userDto.LastName}, {userDto.Email} and {userDto.Password} are required.");
+            return TypedResults.BadRequest(new { errorMessage = "All fields are required."});
         }
         
         Regex emailRegex = new(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
         if (!emailRegex.IsMatch(userDto.Email))
-            return Results.BadRequest("Invalid Email.");
+            return Results.BadRequest(new { errorMessage = "Invalid Email." });
 
         var userId = await authService.RegisterUser(userDto);
+        var createdUser = await authService.GetUserById(userId);
         
-        return TypedResults.CreatedAtRoute(userDto, nameof(GetUserById), new { response = userId });
+        return TypedResults.CreatedAtRoute(createdUser, nameof(GetUserById), new { id = userId });
     }
     
-    private static async Task<IResult> GetUserById(IAuthService authService, int id)
+    private static async Task<IResult> GetUserById(IAuthService authService, long id)
     {
         var userDto = await authService.GetUserById(id);
         
@@ -56,17 +59,17 @@ public static class AuthEndpoints
     private static async Task<IResult> GenarateTokens(IAuthService authService, GenarateTokensRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
-            return TypedResults.BadRequest("All fields are required.");
+            return TypedResults.BadRequest(new { errorMessage = "All fields are required." });
         
         Regex emailRegex = new(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
         if (!emailRegex.IsMatch(request.Email))
-            return Results.BadRequest("Invalid Email.");
+            return Results.BadRequest(new { errorMessage = "Invalid Email." });
         
         var response = await authService.GenarateTokens(request);
         
         return response is not null
             ? TypedResults.Ok(response)
-            : TypedResults.BadRequest("Invalid credentials.");
+            : TypedResults.BadRequest(new { errorMessage = "Invalid credentials." });
     }
     
     private static async Task<IResult> RefreshTokens(RefreshTokensRequest request)

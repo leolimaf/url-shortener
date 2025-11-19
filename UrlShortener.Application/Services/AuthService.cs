@@ -47,7 +47,9 @@ public class AuthService(
     {
         var user = await userRepository.GetUserById(id);
 
-        return user is not null ? new GetUserResponse(user.Id, user.FullName, user.Email) : null;
+        return user is not null 
+            ? new GetUserResponse(user.Id, user.FullName, user.BirthDate, user.Phone, user.Email, user.IsEmailConfirmed) 
+            : null;
     }
 
     public async Task<GenarateTokensResponse?> GenarateTokens(GenarateTokensRequest request)

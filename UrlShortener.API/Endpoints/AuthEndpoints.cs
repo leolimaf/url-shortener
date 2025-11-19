@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Authorization;
 using UrlShortener.Application.Abstractions;
 using UrlShortener.Application.DTOs.Auth.Requests;
 
@@ -12,6 +13,10 @@ public static class AuthEndpoints
         
         appGroup.MapPost("/user", RegisterUser)
             .WithName(nameof(RegisterUser));
+        
+        appGroup.MapGet("/user", CheckAuthenticatedUser)
+            .WithName(nameof(CheckAuthenticatedUser))
+            .RequireAuthorization();
         
         appGroup.MapGet("/user/{id}", GetUserById)
             .WithName(nameof(GetUserById));
@@ -47,6 +52,11 @@ public static class AuthEndpoints
         var createdUser = await authService.GetUserById(userId);
         
         return TypedResults.CreatedAtRoute(createdUser, nameof(GetUserById), new { id = userId });
+    }
+
+    private static async Task<IResult> CheckAuthenticatedUser()
+    {
+        return TypedResults.Ok("You are authenticated.");
     }
     
     private static async Task<IResult> GetUserById(IAuthService authService, long id)

@@ -22,6 +22,9 @@ public static class DependencyInjection
     {
         app.UseSerilogRequestLogging();
         
+        app.UseAuthentication();
+        app.UseAuthorization();
+        
         if (app.Environment.IsDevelopment())
         {
             app.MapOpenApi();

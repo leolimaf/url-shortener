@@ -29,12 +29,10 @@ public static class AuthEndpoints
     {
         if (string.IsNullOrWhiteSpace(userDto.FirstName) 
             || string.IsNullOrWhiteSpace(userDto.LastName) 
-            || userDto.BirthDate is null
-            || string.IsNullOrWhiteSpace(userDto.Phone) 
             || string.IsNullOrWhiteSpace(userDto.Email) 
             || string.IsNullOrWhiteSpace(userDto.Password))
         {
-            return TypedResults.BadRequest(new { errorMessage = "All fields are required."});
+            return TypedResults.BadRequest(new { errorMessage = "Fill in all required fields." });
         }
         
         Regex emailRegex = new(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
@@ -42,6 +40,10 @@ public static class AuthEndpoints
             return Results.BadRequest(new { errorMessage = "Invalid Email." });
 
         var userId = await authService.RegisterUser(userDto);
+        
+        if (userId == 0)
+            return TypedResults.Conflict(new { errorMessage = "User with this email already exists." });
+        
         var createdUser = await authService.GetUserById(userId);
         
         return TypedResults.CreatedAtRoute(createdUser, nameof(GetUserById), new { id = userId });

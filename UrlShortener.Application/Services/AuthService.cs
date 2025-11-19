@@ -25,11 +25,16 @@ public class AuthService(
     private readonly JwtSettings _jwtSettings = jwtOptions.Value;
     public async Task<long> RegisterUser(AddUserRequest request)
     {
+        var registeredUser = await userRepository.GetUserByEmail(request.Email);
+
+        if (registeredUser is not null)
+            return 0;
+        
         var user = new User
         {
             FullName = $"{request.FirstName} {request.LastName}",
             BirthDate = request.BirthDate,
-            Phone = string.Concat(request.Phone.Where(char.IsDigit)),
+            Phone = !string.IsNullOrWhiteSpace(request.Phone) ? string.Concat(request.Phone.Where(char.IsDigit)) : null,
             Email = request.Email,
             IsEmailConfirmed = false
         };

@@ -21,4 +21,9 @@ public class UserRepository(ApplicationDbContext context) : IUserRepository
     {
         return await context.Users.FirstOrDefaultAsync(u => u.Email == email);
     }
+
+    public async Task<User?> GetUserByRefreshToken(string refreshToken)
+    {
+        return await context.Users.FirstOrDefaultAsync(u => u.RefreshTokenHash == refreshToken);
+    }
 }

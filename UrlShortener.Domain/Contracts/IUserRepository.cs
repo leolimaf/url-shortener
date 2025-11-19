@@ -7,4 +7,5 @@ public interface IUserRepository
     public Task AddUser(User user);
     public Task<User?> GetUserById(long id);
     public Task<User?> GetUserByEmail(string email);
+    public Task<User?> GetUserByRefreshToken(string refreshToken);
 }

@@ -93,8 +93,15 @@ public static class AuthEndpoints
             : TypedResults.BadRequest(new { errorMessage = "Invalid credentials." });
     }
     
-    private static async Task<IResult> RefreshTokens(RefreshTokensRequest request)
+    private static async Task<IResult> RefreshTokens(IAuthService authService, RefreshTokensRequest request)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrWhiteSpace(request.RefreshToken))
+            return TypedResults.BadRequest(new { errorMessage = "The refresh token is required." });
+        
+        var response = await authService.RefreshTokens(request);
+
+        return response is not null
+            ? TypedResults.Ok(response)
+            : TypedResults.Unauthorized();
     }
 }

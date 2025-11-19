@@ -23,7 +23,9 @@ namespace UrlShortener.Infrastructure.Migrations
                     EMAIL = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     PASSWORD_HASH = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IS_EMAIL_CONFIRMED = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
-                    ROLE = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ROLE = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    REFRESH_TOKEN_HASH = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    REFRESH_TOKEN_EXPIRY_TIME = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -92,6 +94,13 @@ namespace UrlShortener.Infrastructure.Migrations
                 table: "USER",
                 column: "EMAIL",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_USER_REFRESH_TOKEN_HASH",
+                table: "USER",
+                column: "REFRESH_TOKEN_HASH",
+                unique: true,
+                filter: "[REFRESH_TOKEN_HASH] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_VISITED_URL_CODE",

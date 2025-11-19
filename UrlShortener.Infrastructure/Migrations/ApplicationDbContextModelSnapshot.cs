@@ -101,6 +101,15 @@ namespace UrlShortener.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("PHONE");
 
+                    b.Property<DateTime?>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("REFRESH_TOKEN_EXPIRY_TIME");
+
+                    b.Property<string>("RefreshTokenHash")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("REFRESH_TOKEN_HASH");
+
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -111,6 +120,11 @@ namespace UrlShortener.Infrastructure.Migrations
                     b.HasIndex("Email")
                         .IsUnique()
                         .HasDatabaseName("IX_USER_EMAIL_UNIQUE");
+
+                    b.HasIndex("RefreshTokenHash")
+                        .IsUnique()
+                        .HasDatabaseName("IX_USER_REFRESH_TOKEN_HASH")
+                        .HasFilter("[REFRESH_TOKEN_HASH] IS NOT NULL");
 
                     b.ToTable("USER", (string)null);
                 });

@@ -10,6 +10,8 @@ public class User
     public string PasswordHash { get; set; } = string.Empty;
     public bool IsEmailConfirmed { get; set; }
     public string Role { get; set; } = string.Empty;
+    public string? RefreshTokenHash { get; set; }
+    public DateTime? RefreshTokenExpiryTime { get; set; }
     
     public virtual ICollection<ShortenedUrl> ShortenedUrls { get; set; } = new List<ShortenedUrl>();
 }

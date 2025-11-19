@@ -43,8 +43,19 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasColumnName("ROLE")
             .IsRequired();
         
+        builder.Property(u => u.RefreshTokenHash)
+            .HasColumnName("REFRESH_TOKEN_HASH")
+            .HasMaxLength(100);
+        
+        builder.Property(u => u.RefreshTokenExpiryTime)
+            .HasColumnName("REFRESH_TOKEN_EXPIRY_TIME");
+        
         builder.HasIndex(u => u.Email)
-            .IsUnique()
-            .HasDatabaseName("IX_USER_EMAIL_UNIQUE");
+            .HasDatabaseName("IX_USER_EMAIL_UNIQUE")
+            .IsUnique();
+        
+        builder.HasIndex(u => u.RefreshTokenHash)
+            .HasDatabaseName("IX_USER_REFRESH_TOKEN_HASH")
+            .IsUnique();
     }
 }

@@ -70,12 +70,34 @@ public class AuthService(
         
         var tokens = GenerateTokens(user);
         
+        user.RefreshTokenHash = new PasswordHasher<User>().HashPassword(user, tokens.refreshToken);
+        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+        
+        await unitOfWork.SaveAsync();
+        
         return new GenarateTokensResponse(tokens.accessToken, tokens.refreshToken);
     }
 
-    public Task<RefreshTokensResponse?> RefreshTokens(RefreshTokensRequest request)
+    public async Task<RefreshTokensResponse?> RefreshTokens(RefreshTokensRequest request)
     {
+        // TODO: AVALIAR SE VALE A PENA UTILIZAR REFRESH TOKEN HASH
         throw new NotImplementedException();
+        // var user = await userRepository.GetUserByRefreshToken(request.RefreshToken);
+        //
+        // if (user is null)
+        //     return null;
+        //
+        // if (user.RefreshTokenExpiryTime is null || user.RefreshTokenExpiryTime < DateTime.UtcNow)
+        //     return null;
+        //
+        // var tokens = GenerateTokens(user);
+        //
+        // user.RefreshTokenHash = tokens.refreshToken;
+        // user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+        //
+        // await unitOfWork.SaveAsync();
+        //
+        // return new RefreshTokensResponse(tokens.accessToken, tokens.refreshToken);
     }
     
     private (string accessToken, string refreshToken) GenerateTokens(User user)

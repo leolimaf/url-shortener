@@ -18,7 +18,11 @@ public static class AuthEndpoints
             .WithName(nameof(CheckAuthenticatedUser))
             .RequireAuthorization();
         
-        appGroup.MapGet("/user/{id}", GetUserById)
+        appGroup.MapGet("/user-admin", CheckAdminUser)
+            .WithName(nameof(CheckAdminUser))
+            .RequireAuthorization(x => x.RequireRole("Admin"));
+        
+        appGroup.MapGet("/user/{id:long}", GetUserById)
             .WithName(nameof(GetUserById));
         
         appGroup.MapPost("/access-token", GenarateTokens)
@@ -57,6 +61,11 @@ public static class AuthEndpoints
     private static async Task<IResult> CheckAuthenticatedUser()
     {
         return TypedResults.Ok("You are authenticated.");
+    }
+    
+    private static async Task<IResult> CheckAdminUser()
+    {
+        return TypedResults.Ok("You are an admin user.");
     }
     
     private static async Task<IResult> GetUserById(IAuthService authService, long id)

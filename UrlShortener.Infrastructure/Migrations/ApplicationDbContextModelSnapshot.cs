@@ -101,6 +101,11 @@ namespace UrlShortener.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("PHONE");
 
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ROLE");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Email")

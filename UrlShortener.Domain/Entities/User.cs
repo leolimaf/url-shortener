@@ -9,6 +9,7 @@ public class User
     public string Email { get; set; } = string.Empty;
     public string PasswordHash { get; set; } = string.Empty;
     public bool IsEmailConfirmed { get; set; }
+    public string Role { get; set; } = string.Empty;
     
     public virtual ICollection<ShortenedUrl> ShortenedUrls { get; set; } = new List<ShortenedUrl>();
 }

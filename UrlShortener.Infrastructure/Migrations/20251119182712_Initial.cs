@@ -22,7 +22,8 @@ namespace UrlShortener.Infrastructure.Migrations
                     PHONE = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EMAIL = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     PASSWORD_HASH = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IS_EMAIL_CONFIRMED = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
+                    IS_EMAIL_CONFIRMED = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    ROLE = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {

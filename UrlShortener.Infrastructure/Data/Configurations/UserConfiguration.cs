@@ -39,6 +39,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasColumnName("IS_EMAIL_CONFIRMED")
             .HasDefaultValue(false);
         
+        builder.Property(u => u.Role)
+            .HasColumnName("ROLE")
+            .IsRequired();
+        
         builder.HasIndex(u => u.Email)
             .IsUnique()
             .HasDatabaseName("IX_USER_EMAIL_UNIQUE");

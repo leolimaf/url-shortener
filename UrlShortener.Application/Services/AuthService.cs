@@ -36,7 +36,8 @@ public class AuthService(
             BirthDate = request.BirthDate,
             Phone = !string.IsNullOrWhiteSpace(request.Phone) ? string.Concat(request.Phone.Where(char.IsDigit)) : null,
             Email = request.Email,
-            IsEmailConfirmed = false
+            IsEmailConfirmed = false,
+            Role = "user"
         };
         
         user.PasswordHash = new PasswordHasher<User>()
@@ -60,46 +61,48 @@ public class AuthService(
     public async Task<GenarateTokensResponse?> GenarateTokens(GenarateTokensRequest request)
     {
         var user = await userRepository.GetUserByEmail(request.Email);
-        
+
         if (user is null)
             return null;
-        
+
         var passwordVerificationResult = new PasswordHasher<User>().VerifyHashedPassword(user, user.PasswordHash, request.Password);
         if (passwordVerificationResult == PasswordVerificationResult.Failed)
             return null;
-        
+
         var tokens = GenerateTokens(user);
         
-        user.RefreshTokenHash = new PasswordHasher<User>().HashPassword(user, tokens.refreshToken);
+        var refreshTokenHashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(tokens.refreshToken));
+
+        user.RefreshTokenHash = Convert.ToHexString(refreshTokenHashBytes);
         user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
-        
+
         await unitOfWork.SaveAsync();
-        
+
         return new GenarateTokensResponse(tokens.accessToken, tokens.refreshToken);
     }
 
     public async Task<RefreshTokensResponse?> RefreshTokens(RefreshTokensRequest request)
     {
-        // TODO: AVALIAR SE VALE A PENA UTILIZAR REFRESH TOKEN HASH
-        throw new NotImplementedException();
-        // var user = await userRepository.GetUserByRefreshToken(request.RefreshToken);
-        //
-        // if (user is null)
-        //     return null;
-        //
-        // if (user.RefreshTokenExpiryTime is null || user.RefreshTokenExpiryTime < DateTime.UtcNow)
-        //     return null;
-        //
-        // var tokens = GenerateTokens(user);
-        //
-        // user.RefreshTokenHash = tokens.refreshToken;
-        // user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
-        //
-        // await unitOfWork.SaveAsync();
-        //
-        // return new RefreshTokensResponse(tokens.accessToken, tokens.refreshToken);
+        var refreshTokenHashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(request.RefreshToken));
+        var refreshTokenHash = Convert.ToHexString(refreshTokenHashBytes);
+
+        var user = await userRepository.GetUserByRefreshTokenHash(refreshTokenHash);
+
+        if (user?.RefreshTokenExpiryTime is null || user.RefreshTokenExpiryTime < DateTime.UtcNow)
+            return null;
+
+        var tokens = GenerateTokens(user);
+        
+        var updatedRefreshTokenHashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(tokens.refreshToken));
+
+        user.RefreshTokenHash = Convert.ToHexString(updatedRefreshTokenHashBytes);
+        user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+
+        await unitOfWork.SaveAsync();
+
+        return new RefreshTokensResponse(tokens.accessToken, tokens.refreshToken);
     }
-    
+
     private (string accessToken, string refreshToken) GenerateTokens(User user)
     {
         var claims = new List<Claim>
@@ -124,6 +127,6 @@ public class AuthService(
         var tokenHandler = new JwtSecurityTokenHandler();
         var securityToken = tokenHandler.CreateToken(tokenDescriptor);
         
-        return (tokenHandler.WriteToken(securityToken), Convert.ToBase64String(RandomNumberGenerator.GetBytes(32)));
+        return (tokenHandler.WriteToken(securityToken), Guid.NewGuid().ToString("N"));
     }
 }

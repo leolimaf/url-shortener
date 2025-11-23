@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Authorization;
 using UrlShortener.Application.Abstractions;
 using UrlShortener.Application.DTOs.Auth.Requests;
 
@@ -14,16 +13,9 @@ public static class AuthEndpoints
         appGroup.MapPost("/user", RegisterUser)
             .WithName(nameof(RegisterUser));
         
-        appGroup.MapGet("/user", CheckAuthenticatedUser)
-            .WithName(nameof(CheckAuthenticatedUser))
-            .RequireAuthorization();
-        
-        appGroup.MapGet("/user-admin", CheckAdminUser)
-            .WithName(nameof(CheckAdminUser))
-            .RequireAuthorization(x => x.RequireRole("Admin"));
-        
         appGroup.MapGet("/user/{id:long}", GetUserById)
-            .WithName(nameof(GetUserById));
+            .WithName(nameof(GetUserById))
+            .RequireAuthorization(x => x.RequireRole("admin"));
         
         appGroup.MapPost("/access-token", GenarateTokens)
             .WithName(nameof(GenarateTokens));
@@ -56,16 +48,6 @@ public static class AuthEndpoints
         var createdUser = await authService.GetUserById(userId);
         
         return TypedResults.CreatedAtRoute(createdUser, nameof(GetUserById), new { id = userId });
-    }
-
-    private static async Task<IResult> CheckAuthenticatedUser()
-    {
-        return TypedResults.Ok("You are authenticated.");
-    }
-    
-    private static async Task<IResult> CheckAdminUser()
-    {
-        return TypedResults.Ok("You are an admin user.");
     }
     
     private static async Task<IResult> GetUserById(IAuthService authService, long id)

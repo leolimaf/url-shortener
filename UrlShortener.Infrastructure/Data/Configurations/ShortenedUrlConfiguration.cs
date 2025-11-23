@@ -29,6 +29,14 @@ public class ShortenedUrlConfiguration : IEntityTypeConfiguration<ShortenedUrl>
             .HasColumnName("CREATED_AT_UTC")
             .HasDefaultValueSql("GETUTCDATE()");
         
+        builder.Property(su => su.UserId)
+            .HasColumnName("USER_ID");
+        
+        builder.HasOne(su => su.User)
+            .WithMany(u => u.ShortenedUrls)
+            .HasForeignKey(su => su.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
         builder.HasIndex(su => su.Code)
             .IsUnique();
     }

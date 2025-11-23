@@ -12,7 +12,7 @@ using UrlShortener.Infrastructure.Data;
 namespace UrlShortener.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251011180628_Initial")]
+    [Migration("20251119203511_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -51,12 +51,85 @@ namespace UrlShortener.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("ORIGINAL_URL");
 
+                    b.Property<long?>("UserId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("USER_ID");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Code")
                         .IsUnique();
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("SHORTENED_URL", (string)null);
+                });
+
+            modelBuilder.Entity("UrlShortener.Domain.Entities.User", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("ID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateOnly?>("BirthDate")
+                        .HasColumnType("date")
+                        .HasColumnName("BIRTH_DATE");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("EMAIL");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("FULL_NAME");
+
+                    b.Property<bool>("IsEmailConfirmed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("IS_EMAIL_CONFIRMED");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("PASSWORD_HASH");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("PHONE");
+
+                    b.Property<DateTime?>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("REFRESH_TOKEN_EXPIRY_TIME");
+
+                    b.Property<string>("RefreshTokenHash")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("REFRESH_TOKEN_HASH");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ROLE");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasDatabaseName("IX_USER_EMAIL_UNIQUE");
+
+                    b.HasIndex("RefreshTokenHash")
+                        .IsUnique()
+                        .HasDatabaseName("IX_USER_REFRESH_TOKEN_HASH")
+                        .HasFilter("[REFRESH_TOKEN_HASH] IS NOT NULL");
+
+                    b.ToTable("USER", (string)null);
                 });
 
             modelBuilder.Entity("UrlShortener.Domain.Entities.VisitedUrl", b =>
@@ -105,6 +178,16 @@ namespace UrlShortener.Infrastructure.Migrations
                     b.ToTable("VISITED_URL", (string)null);
                 });
 
+            modelBuilder.Entity("UrlShortener.Domain.Entities.ShortenedUrl", b =>
+                {
+                    b.HasOne("UrlShortener.Domain.Entities.User", "User")
+                        .WithMany("ShortenedUrls")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("UrlShortener.Domain.Entities.VisitedUrl", b =>
                 {
                     b.HasOne("UrlShortener.Domain.Entities.ShortenedUrl", "ShortenedUrl")
@@ -119,6 +202,11 @@ namespace UrlShortener.Infrastructure.Migrations
             modelBuilder.Entity("UrlShortener.Domain.Entities.ShortenedUrl", b =>
                 {
                     b.Navigation("VisitedUrls");
+                });
+
+            modelBuilder.Entity("UrlShortener.Domain.Entities.User", b =>
+                {
+                    b.Navigation("ShortenedUrls");
                 });
 #pragma warning restore 612, 618
         }

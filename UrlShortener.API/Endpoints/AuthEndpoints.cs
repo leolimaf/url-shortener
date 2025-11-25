@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using UrlShortener.Application.Abstractions;
 using UrlShortener.Application.DTOs.Auth.Requests;
+using UrlShortener.Application.DTOs.Auth.Responses;
 
 namespace UrlShortener.API.Endpoints;
 
@@ -11,17 +12,31 @@ public static class AuthEndpoints
         var appGroup = app.MapGroup("/auth").WithTags("Auth");
         
         appGroup.MapPost("/user", RegisterUser)
-            .WithName(nameof(RegisterUser));
+            .WithName(nameof(RegisterUser))
+            .Produces<GetUserResponse>(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status500InternalServerError);
         
         appGroup.MapGet("/user/{id:long}", GetUserById)
             .WithName(nameof(GetUserById))
-            .RequireAuthorization(x => x.RequireRole("admin"));
+            .RequireAuthorization(x => x.RequireRole("admin"))
+            .Produces<GetUserResponse>()
+            .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status401Unauthorized)
+            .Produces(StatusCodes.Status403Forbidden)
+            .Produces(StatusCodes.Status500InternalServerError);
         
         appGroup.MapPost("/access-token", GenarateTokens)
-            .WithName(nameof(GenarateTokens));
+            .WithName(nameof(GenarateTokens))
+            .Produces<GenarateTokensResponse>()
+            .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status500InternalServerError);
         
         appGroup.MapPost("/refresh-token", RefreshTokens)
-            .WithName(nameof(RefreshTokens));
+            .WithName(nameof(RefreshTokens))
+            .Produces<RefreshTokensResponse>()
+            .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status500InternalServerError);
         
         return app;
     }

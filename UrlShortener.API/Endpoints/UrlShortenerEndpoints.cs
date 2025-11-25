@@ -1,5 +1,6 @@
 ﻿using UrlShortener.Application.Abstractions;
 using UrlShortener.Application.DTOs.UrlShortener.Requests;
+using UrlShortener.Application.DTOs.UrlShortener.Responses;
 
 namespace UrlShortener.API.Endpoints;
 
@@ -12,10 +13,16 @@ public static class UrlShortenerEndpoints
             .AllowAnonymous();
         
         appGroup.MapPost("", IncludeShortenedUrl)
-            .WithName(nameof(IncludeShortenedUrl));
+            .WithName(nameof(IncludeShortenedUrl))
+            .Produces<ShortenUrlResponse>()
+            .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status500InternalServerError);
         
         appGroup.MapGet("{code}", GetOriginalUrl)
-            .WithName(nameof(GetOriginalUrl));
+            .WithName(nameof(GetOriginalUrl))
+            .Produces(StatusCodes.Status302Found)
+            .Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status500InternalServerError);
         
         return app;
     }

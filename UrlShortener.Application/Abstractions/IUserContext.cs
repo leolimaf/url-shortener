@@ -2,6 +2,7 @@
 
 public interface IUserContext
 {
+    string? UserId { get; }
     string? UserAgent { get; }
     string? Referer { get; }
     string? IpAddress { get; }

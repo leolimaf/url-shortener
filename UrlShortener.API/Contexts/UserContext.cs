@@ -1,9 +1,11 @@
-﻿using UrlShortener.Application.Abstractions;
+﻿using System.Security.Claims;
+using UrlShortener.Application.Abstractions;
 
 namespace UrlShortener.API.Contexts;
 
 public class UserContext(IHttpContextAccessor httpContextAccessor) : IUserContext
 {
+    public string? UserId => httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     public string? UserAgent => httpContextAccessor.HttpContext?.Request.Headers.UserAgent.ToString();
 
     public string? Referer => httpContextAccessor.HttpContext?.Request.Headers.Referer.ToString();

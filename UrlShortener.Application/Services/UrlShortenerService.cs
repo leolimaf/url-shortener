@@ -31,7 +31,8 @@ public class UrlShortenerService(
                 {
                     OriginalUrl = request.Url,
                     Code = code,
-                    CreatedAtUtc = DateTime.UtcNow
+                    CreatedAtUtc = DateTime.UtcNow,
+                    UserId = userContext.UserId is not null ? long.Parse(userContext.UserId) : null
                 };
 
                 await urlShortenerRepository.AddShortenedUrl(shortenedUrl);

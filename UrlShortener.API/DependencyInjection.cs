@@ -14,40 +14,37 @@ public static class DependencyInjection
         {
             options.AddDocumentTransformer((document, _, _) =>
             {
-                document.Info = new Microsoft.OpenApi.Models.OpenApiInfo
+                document.Info = new Microsoft.OpenApi.OpenApiInfo
                 {
                     Title = "URL Shortener API",
                     Version = "v1",
                     Description = "API para encurtar URLs"
                 };
-                
-                document.Components ??= new Microsoft.OpenApi.Models.OpenApiComponents();
 
                 // Definição do esquema de segurança Bearer
-                document.Components.SecuritySchemes["Bearer"] = new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+                var securityScheme = new Microsoft.OpenApi.OpenApiSecurityScheme
                 {
-                    Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+                    Type = Microsoft.OpenApi.SecuritySchemeType.Http,
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
-                    In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                    In = Microsoft.OpenApi.ParameterLocation.Header,
                     Description = "Insira apenas o Bearer token (JWT)"
                 };
 
-                // Adiciona requisito global
-                document.SecurityRequirements.Add(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+                document.Components ??= new Microsoft.OpenApi.OpenApiComponents();
+                document.Components.SecuritySchemes = new Dictionary<string, Microsoft.OpenApi.IOpenApiSecurityScheme>
                 {
+                    ["Bearer"] = securityScheme
+                };
+
+                // Adiciona requisito global
+                document.Security =
+                [
+                    new Microsoft.OpenApi.OpenApiSecurityRequirement
                     {
-                        new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-                        {
-                            Reference = new Microsoft.OpenApi.Models.OpenApiReference
-                            {
-                                Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        Array.Empty<string>()
+                        [new Microsoft.OpenApi.OpenApiSecuritySchemeReference("Bearer", document)] = []
                     }
-                });
+                ];
 
                 return Task.CompletedTask;
             });

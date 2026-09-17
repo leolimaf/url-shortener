@@ -1,0 +1,54 @@
+<section class="hero">
+  <h1>Cole sua URL longa</h1>
+  <p class="subtitle">Encurte links em segundos, com ou sem conta.</p>
+
+  <mat-card class="shorten-card">
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="shorten()" class="shorten-form" novalidate>
+        <mat-form-field appearance="outline" class="url-field">
+          <mat-label>https://sua-url-muito-longa.com/…</mat-label>
+          <input
+            matInput
+            type="url"
+            name="url"
+            formControlName="url"
+            inputmode="url"
+            autocomplete="url"
+            spellcheck="false"
+            placeholder="https://exemplo.com/minha-pagina"
+          />
+          @if (form.controls.url.hasError('required') && form.controls.url.touched) {
+            <mat-error>Informe a URL que deseja encurtar.</mat-error>
+          }
+        </mat-form-field>
+        <button mat-flat-button color="primary" type="submit" [disabled]="busy()">
+          @if (busy()) {
+            <mat-spinner diameter="18" aria-label="Encurtando" />
+          } @else {
+            Encurtar
+          }
+        </button>
+      </form>
+      @if (formatError()) {
+        <p class="format-error" aria-live="polite">Formato de URL inválido.</p>
+      }
+    </mat-card-content>
+  </mat-card>
+
+  @if (result(); as done) {
+    <mat-card class="result-card">
+      <mat-card-content>
+        <p class="result-label">Seu link curto</p>
+        <div class="result-row">
+          <a class="short-url" [href]="done.shortUrl" target="_blank" rel="noopener">{{ done.shortUrl }}</a>
+          <button mat-stroked-button type="button" (click)="copy()">
+            <mat-icon aria-hidden="true">content_copy</mat-icon>
+            Copiar
+          </button>
+        </div>
+        <p class="original-url">{{ done.originalUrl }}</p>
+        <button mat-button type="button" (click)="shortenAnother()">Encurtar outra URL</button>
+      </mat-card-content>
+    </mat-card>
+  }
+</section>

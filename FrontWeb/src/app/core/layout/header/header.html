@@ -1,0 +1,42 @@
+<mat-toolbar color="primary" class="header">
+  <img class="logo" src="assets/branding/logo.svg" alt="Encurtador" height="32" width="165" />
+  <span class="spacer"></span>
+
+  <button
+    mat-icon-button
+    type="button"
+    (click)="theme.toggle()"
+    [attr.aria-label]="theme.mode() === 'dark' ? 'Usar modo claro' : 'Usar modo escuro'"
+    [title]="theme.mode() === 'dark' ? 'Modo claro' : 'Modo escuro'"
+  >
+    <mat-icon aria-hidden="true">{{ theme.mode() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
+  </button>
+
+  @if (auth.currentUser(); as user) {
+    <button mat-button type="button" [matMenuTriggerFor]="accountMenu">
+      <mat-icon aria-hidden="true">account_circle</mat-icon>
+      {{ user.displayName }}
+    </button>
+    <mat-menu #accountMenu="matMenu">
+      <button mat-menu-item type="button" (click)="logout()">
+        <mat-icon aria-hidden="true">logout</mat-icon>
+        <span>Sair</span>
+      </button>
+    </mat-menu>
+  } @else {
+    <button mat-button type="button" [matMenuTriggerFor]="accountMenu">
+      <mat-icon aria-hidden="true">account_circle</mat-icon>
+      Entrar
+    </button>
+    <mat-menu #accountMenu="matMenu">
+      <button mat-menu-item type="button" (click)="openLogin()">
+        <mat-icon aria-hidden="true">login</mat-icon>
+        <span>Entrar</span>
+      </button>
+      <button mat-menu-item type="button" (click)="openRegister()">
+        <mat-icon aria-hidden="true">person_add</mat-icon>
+        <span>Cadastrar</span>
+      </button>
+    </mat-menu>
+  }
+</mat-toolbar>

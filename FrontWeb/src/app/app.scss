@@ -1,0 +1,25 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+}
+
+.skip-link {
+  position: absolute;
+  left: 0.5rem;
+  top: -3rem;
+  z-index: 100;
+  background: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  transition: top 0.15s ease-out;
+}
+
+.skip-link:focus-visible {
+  top: 0.5rem;
+}

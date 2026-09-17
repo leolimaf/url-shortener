@@ -62,6 +62,19 @@
     networks:
       - application-network
 
+  urlshortener.web:
+    build:
+      context: .
+      dockerfile: FrontWeb/Dockerfile
+    container_name: urlshortener-web
+    ports:
+      - "8081:80"
+    depends_on:
+      - urlshortener.api
+    restart: unless-stopped
+    networks:
+      - application-network
+
 volumes:
   sqlserver_data:
   seq_data:

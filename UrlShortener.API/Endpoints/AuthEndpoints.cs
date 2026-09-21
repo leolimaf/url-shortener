@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Security.Claims;
+using System.Text.RegularExpressions;
 using UrlShortener.Application.Abstractions;
 using UrlShortener.Application.DTOs.Auth.Requests;
 using UrlShortener.Application.DTOs.Auth.Responses;
@@ -15,6 +16,14 @@ public static class AuthEndpoints
             .WithName(nameof(RegisterUser))
             .Produces<GetUserResponse>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status400BadRequest)
+            .Produces(StatusCodes.Status500InternalServerError);
+        
+        appGroup.MapGet("/me", GetCurrentUser)
+            .WithName(nameof(GetCurrentUser))
+            .RequireAuthorization()
+            .Produces<GetUserResponse>()
+            .Produces(StatusCodes.Status401Unauthorized)
+            .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status500InternalServerError);
         
         appGroup.MapGet("/user/{id:long}", GetUserById)
@@ -63,6 +72,20 @@ public static class AuthEndpoints
         var createdUser = await authService.GetUserById(userId);
         
         return TypedResults.CreatedAtRoute(createdUser, nameof(GetUserById), new { id = userId });
+    }
+    
+    private static async Task<IResult> GetCurrentUser(ClaimsPrincipal user, IAuthService authService)
+    {
+        var userIdValue = user.FindFirstValue(ClaimTypes.NameIdentifier);
+        
+        if (!long.TryParse(userIdValue, out var userId))
+            return TypedResults.Unauthorized();
+        
+        var userDto = await authService.GetUserById(userId);
+        
+        return userDto is not null
+            ? TypedResults.Ok(userDto)
+            : TypedResults.NotFound();
     }
     
     private static async Task<IResult> GetUserById(IAuthService authService, long id)

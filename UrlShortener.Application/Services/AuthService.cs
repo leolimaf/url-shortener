@@ -103,6 +103,21 @@ public class AuthService(
         return new RefreshTokensResponse(tokens.accessToken, tokens.refreshToken);
     }
 
+    public async Task<bool> Logout(long userId)
+    {
+        var user = await userRepository.GetUserById(userId);
+
+        if (user is null)
+            return false;
+
+        user.RefreshTokenHash = null;
+        user.RefreshTokenExpiryTime = null;
+
+        await unitOfWork.SaveAsync();
+
+        return true;
+    }
+
     private (string accessToken, string refreshToken) GenerateTokens(User user)
     {
         var claims = new List<Claim>

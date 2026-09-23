@@ -9,4 +9,5 @@ public interface IAuthService
     public Task<GetUserResponse?> GetUserById(long id);
     public Task<GenarateTokensResponse?> GenarateTokens(GenarateTokensRequest request);
     public Task<RefreshTokensResponse?> RefreshTokens(RefreshTokensRequest request);
+    public Task<bool> Logout(long userId);
 }

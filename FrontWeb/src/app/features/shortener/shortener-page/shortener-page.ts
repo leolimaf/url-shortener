@@ -1,5 +1,5 @@
 import { Component, ElementRef, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -45,13 +45,12 @@ export class ShortenerPage {
   readonly formatError = signal(false);
 
   readonly form = this.fb.nonNullable.group({
-    url: ['', Validators.required],
+    url: [''],
   });
 
   shorten(): void {
     const raw = this.form.controls.url.value.trim();
     if (!raw) {
-      this.form.markAllAsTouched();
       this.focusField('url');
       return;
     }

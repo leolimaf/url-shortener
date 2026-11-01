@@ -2,6 +2,8 @@
   display: flex;
   justify-content: center;
   padding: 1rem;
-  opacity: 0.64;
   font-size: 0.875rem;
+  background: var(--mat-sys-surface-container);
+  color: var(--mat-sys-on-surface-variant);
+  box-shadow: 0 -1px 0 0 var(--mat-sys-outline-variant);
 }

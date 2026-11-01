@@ -1,5 +1,28 @@
 <mat-toolbar color="primary" class="header">
-  <img class="logo" src="assets/branding/logo.svg" alt="Encurtador" height="32" width="165" />
+  <svg
+    class="logo"
+    viewBox="0 0 248 48"
+    width="165"
+    height="32"
+    role="img"
+    aria-label="Encurtador"
+    focusable="false"
+  >
+    <g transform="translate(8,8) scale(1.333)" fill="currentColor">
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" />
+    </g>
+    <text
+      x="52"
+      y="31"
+      fill="currentColor"
+      font-family="Roboto, 'Helvetica Neue', Arial, sans-serif"
+      font-size="20"
+      font-weight="700"
+      letter-spacing="3"
+    >
+      ENCURTADOR
+    </text>
+  </svg>
   <span class="spacer"></span>
 
   <button
@@ -24,9 +47,14 @@
       </button>
     </mat-menu>
   } @else {
-    <button mat-button type="button" [matMenuTriggerFor]="accountMenu">
+    <button
+      mat-icon-button
+      type="button"
+      [matMenuTriggerFor]="accountMenu"
+      aria-label="Entrar ou cadastrar"
+      title="Entrar ou cadastrar"
+    >
       <mat-icon aria-hidden="true">account_circle</mat-icon>
-      Entrar
     </button>
     <mat-menu #accountMenu="matMenu">
       <button mat-menu-item type="button" (click)="openLogin()">

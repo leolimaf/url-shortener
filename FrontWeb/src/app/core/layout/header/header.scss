@@ -1,12 +1,19 @@
 .header {
+  --mat-toolbar-container-background-color: var(--mat-sys-surface-container);
+  --mat-toolbar-container-text-color: var(--mat-sys-on-surface);
   position: sticky;
   top: 0;
   z-index: 10;
+  /* Separador de 1px sem alterar a altura do toolbar. */
+  box-shadow: 0 1px 0 0 var(--mat-sys-outline-variant);
 }
 
 .logo {
+  display: block;
   height: 32px;
   width: auto;
+  /* Herda --mat-sys-on-surface do mat-toolbar via currentColor. */
+  color: inherit;
 }
 
 .spacer {

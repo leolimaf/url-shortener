@@ -33,9 +33,8 @@ export class ThemeService {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved === 'light' || saved === 'dark') return saved;
     } catch {
-      // ignora e usa preferencia do sistema
+      // armazenamento indisponivel: usa o padrao claro
     }
-    const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
-    return prefersDark ? 'dark' : 'light';
+    return 'dark';
   }
 }

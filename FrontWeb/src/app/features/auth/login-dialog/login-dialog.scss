@@ -1,0 +1,12 @@
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: min(400px, 80vw);
+  padding-top: 0.5rem;
+}
+
+.server-error {
+  color: var(--mat-sys-error);
+  margin: 0.25rem 0 0;
+}

@@ -1,0 +1,70 @@
+<mat-toolbar color="primary" class="header">
+  <svg
+    class="logo"
+    viewBox="0 0 248 48"
+    width="165"
+    height="32"
+    role="img"
+    aria-label="Encurtador"
+    focusable="false"
+  >
+    <g transform="translate(8,8) scale(1.333)" fill="currentColor">
+      <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" />
+    </g>
+    <text
+      x="52"
+      y="31"
+      fill="currentColor"
+      font-family="Roboto, 'Helvetica Neue', Arial, sans-serif"
+      font-size="20"
+      font-weight="700"
+      letter-spacing="3"
+    >
+      ENCURTADOR
+    </text>
+  </svg>
+  <span class="spacer"></span>
+
+  <button
+    mat-icon-button
+    type="button"
+    (click)="theme.toggle()"
+    [attr.aria-label]="theme.mode() === 'dark' ? 'Usar modo claro' : 'Usar modo escuro'"
+    [title]="theme.mode() === 'dark' ? 'Modo claro' : 'Modo escuro'"
+  >
+    <mat-icon aria-hidden="true">{{ theme.mode() === 'dark' ? 'light_mode' : 'dark_mode' }}</mat-icon>
+  </button>
+
+  @if (auth.currentUser(); as user) {
+    <button mat-button type="button" [matMenuTriggerFor]="accountMenu">
+      <mat-icon aria-hidden="true">account_circle</mat-icon>
+      {{ user.displayName }}
+    </button>
+    <mat-menu #accountMenu="matMenu">
+      <button mat-menu-item type="button" (click)="logout()">
+        <mat-icon aria-hidden="true">logout</mat-icon>
+        <span>Sair</span>
+      </button>
+    </mat-menu>
+  } @else {
+    <button
+      mat-icon-button
+      type="button"
+      [matMenuTriggerFor]="accountMenu"
+      aria-label="Entrar ou cadastrar"
+      title="Entrar ou cadastrar"
+    >
+      <mat-icon aria-hidden="true">account_circle</mat-icon>
+    </button>
+    <mat-menu #accountMenu="matMenu">
+      <button mat-menu-item type="button" (click)="openLogin()">
+        <mat-icon aria-hidden="true">login</mat-icon>
+        <span>Entrar</span>
+      </button>
+      <button mat-menu-item type="button" (click)="openRegister()">
+        <mat-icon aria-hidden="true">person_add</mat-icon>
+        <span>Cadastrar</span>
+      </button>
+    </mat-menu>
+  }
+</mat-toolbar>

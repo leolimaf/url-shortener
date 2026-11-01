@@ -47,6 +47,13 @@ public static class AuthEndpoints
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status500InternalServerError);
         
+        appGroup.MapPost("/logout", Logout)
+            .WithName(nameof(Logout))
+            .RequireAuthorization()
+            .Produces(StatusCodes.Status204NoContent)
+            .Produces(StatusCodes.Status401Unauthorized)
+            .Produces(StatusCodes.Status500InternalServerError);
+        
         return app;
     }
 
@@ -123,5 +130,17 @@ public static class AuthEndpoints
         return response is not null
             ? TypedResults.Ok(response)
             : TypedResults.Unauthorized();
+    }
+    
+    private static async Task<IResult> Logout(ClaimsPrincipal user, IAuthService authService)
+    {
+        var userIdValue = user.FindFirstValue(ClaimTypes.NameIdentifier);
+        
+        if (!long.TryParse(userIdValue, out var userId))
+            return TypedResults.Unauthorized();
+        
+        await authService.Logout(userId);
+        
+        return TypedResults.NoContent();
     }
 }
